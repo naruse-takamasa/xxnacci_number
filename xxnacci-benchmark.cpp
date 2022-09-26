@@ -1,11 +1,11 @@
+#include "xxnacci-normal.h"
+#include "xxnacci-neon.h"
+
 #include <iostream>
 #include <vector>
 #include <cstddef>
 
-#include "xxnacci-normal.h"
-#include "xxnacci-neon.h"
-
-namespace{
+namespace {
 
 constexpr uint32_t num_of_test = 30;
 constexpr size_t MAX_N = 300000;
@@ -14,7 +14,6 @@ constexpr uint32_t m = 19;
 uint32_t A[MAX_N << 1], ANS[MAX_N << 1];
 std::vector<double> times[2];
 
-}
 
 template<bool is_neon_mode>
 std::pair<double, uint32_t> cal_xxnacci() {
@@ -23,10 +22,10 @@ std::pair<double, uint32_t> cal_xxnacci() {
     set_zero_mat(&A[MAX_N], n);
     set_zero_mat(&ANS[0], n);
     set_zero_mat(&ANS[MAX_N], n);
-    for (std::remove_const<decltype(n)>::type i = 0; i < n; i++) {
+    for (std::size_t i = 0; i < n; i++) {
         A[i * n] = 1;
     }
-    for (std::remove_const<decltype(n)>::type i = 1; i < n; i++) {
+    for (std::size_t i = 1; i < n; i++) {
         A[i + (i - 1) * n] = 1;
     }
 
@@ -83,12 +82,14 @@ void test() {
     times[1].push_back(normal_time);
 }
 
+}
+
 int main() {
-    for (std::remove_const<decltype(num_of_test)>::type i = 0; i < num_of_test; i++) {
-        test();
+    for (uint32_t i = 0; i < num_of_test; i++) {
+        ::test();
     }
-    sort(times[0].begin(), times[0].end());
-    sort(times[1].begin(), times[1].end());
-    std::cout << "neon median : " << times[0][times[0].size() / 2] << " micro sec.  ";
-    std::cout << "normal median : " << times[1][times[1].size() / 2] << " micro sec." << std::endl;
+    sort(::times[0].begin(), ::times[0].end());
+    sort(::times[1].begin(), ::times[1].end());
+    std::cout << "neon median : " << ::times[0][times[0].size() / 2] << " micro sec.  ";
+    std::cout << "normal median : " << ::times[1][times[1].size() / 2] << " micro sec." << std::endl;
 }
