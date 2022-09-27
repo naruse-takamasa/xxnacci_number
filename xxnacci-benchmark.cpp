@@ -29,7 +29,7 @@ std::pair<double, uint32_t> cal_xxnacci() {
         A[i + (i - 1) * n] = 1;
     }
 
-    auto ans_bit = 0, a_bit = 0;
+    auto ans_idx = 0, a_idx = 0;
     auto first = true;
     uint32_t mask = 1;
     auto start = std::chrono::system_clock::now();
@@ -37,27 +37,27 @@ std::pair<double, uint32_t> cal_xxnacci() {
     while (m >= mask) {
         if (m & mask) {
             if (first) {
-                add_mat(&ANS[(ans_bit ^ 1) * MAX_N], &A[a_bit * MAX_N], n);
+                add_mat(&ANS[(ans_idx ^ 1) * MAX_N], &A[a_idx * MAX_N], n);
                 first = false;
             } else {
-                set_zero_mat(&ANS[(ans_bit ^ 1) * MAX_N], n);
+                set_zero_mat(&ANS[(ans_idx ^ 1) * MAX_N], n);
                 if constexpr (is_neon_mode)
-                    neon_mat_mul(&ANS[(ans_bit ^ 1) * MAX_N], &A[a_bit * MAX_N], &ANS[ans_bit * MAX_N], n);
+                    neon_mat_mul(&ANS[(ans_idx ^ 1) * MAX_N], &A[a_idx * MAX_N], &ANS[ans_idx * MAX_N], n);
                 else
-                    normal_mat_mul(&ANS[(ans_bit ^ 1) * MAX_N], &A[a_bit * MAX_N], &ANS[ans_bit * MAX_N], n);
+                    normal_mat_mul(&ANS[(ans_idx ^ 1) * MAX_N], &A[a_idx * MAX_N], &ANS[ans_idx * MAX_N], n);
             }
-            ans_bit ^= 1;
+            ans_idx ^= 1;
         }
-        set_zero_mat(&A[(a_bit ^ 1) * MAX_N], n);
+        set_zero_mat(&A[(a_idx ^ 1) * MAX_N], n);
         if constexpr (is_neon_mode)
-            neon_mat_mul(&A[(a_bit ^ 1) * MAX_N], &A[a_bit * MAX_N], &A[a_bit * MAX_N], n);
+            neon_mat_mul(&A[(a_idx ^ 1) * MAX_N], &A[a_idx * MAX_N], &A[a_idx * MAX_N], n);
         else
-            normal_mat_mul(&A[(a_bit ^ 1) * MAX_N], &A[a_bit * MAX_N], &A[a_bit * MAX_N], n);
+            normal_mat_mul(&A[(a_idx ^ 1) * MAX_N], &A[a_idx * MAX_N], &A[a_idx * MAX_N], n);
 #ifdef DEBUG_BUILD
-        print_mat(&A[a_bit * MAX_N], n);
-        print_mat(&A[(a_bit ^ 1) * MAX_N], n);
+        print_mat(&A[a_idx * MAX_N], n);
+        print_mat(&A[(a_idx ^ 1) * MAX_N], n);
 #endif
-        a_bit ^= 1;
+        a_idx ^= 1;
         mask <<= 1;
     }
 
@@ -69,9 +69,9 @@ std::pair<double, uint32_t> cal_xxnacci() {
     else
         std::cerr << "normal ";
     std::cerr << "elapse time : " << elapse_time << " micro sec." << std::endl;
-    std::cerr << ANS[ans_bit * MAX_N] << std::endl;
+    std::cerr << ANS[ans_idx * MAX_N] << std::endl;
 #endif
-    return {elapse_time, ANS[ans_bit * MAX_N]};
+    return {elapse_time, ANS[ans_idx * MAX_N]};
 }
 
 void test() {
