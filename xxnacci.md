@@ -138,6 +138,8 @@ $$
 
 ## 実装
 
+
+neon median : 88514 micro sec.  normal median : 303814 micro sec.
 ## 感想
 
 - 記念すべきNEON初体験
