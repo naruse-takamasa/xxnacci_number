@@ -24,7 +24,7 @@ for i in range(1, m):
         x.append(csv_input.values[idx, 0])
         neon_y.append(csv_input.values[idx, 2])
         normal_y.append(csv_input.values[idx, 3])
-    # fig = plt.plot(x, normal_y, linestyle="dotted")
+    fig = plt.plot(x, normal_y, linestyle="dotted")
     fig = plt.plot(x, neon_y)
 
 fig = plt.grid(True)
