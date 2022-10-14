@@ -30,7 +30,7 @@ std::pair<double, uint32_t> cal_xxnacci() {
     auto ans_idx = 0, a_idx = 0;
     auto first = true;
     uint32_t mask = 1;
-    auto start = std::chrono::system_clock::now();
+    auto start = std::chrono::high_resolution_clock::now();
 
     while (m >= mask) {
         if (m & mask) {
@@ -59,7 +59,7 @@ std::pair<double, uint32_t> cal_xxnacci() {
         mask <<= 1;
     }
 
-    auto end = std::chrono::system_clock::now();
+    auto end = std::chrono::high_resolution_clock::now();
     auto elapse_time = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 #ifdef DEBUG_BUILD
     if constexpr (is_neon_mode)
@@ -76,19 +76,12 @@ std::vector<std::tuple<size_t, uint32_t, double, double> > elapse_time_list;
 
 void test() {
     constexpr uint32_t num_of_test = 30;
-    std::vector<double> times[2];
     for (uint32_t i = 0; i < num_of_test; i++) {
         auto [neon_time, neon_res] = cal_xxnacci<true>();
         auto [normal_time, normal_res] = cal_xxnacci<false>();
         assert(neon_res == normal_res);
-        times[0].push_back(neon_time);
-        times[1].push_back(normal_time);
+        elapse_time_list.emplace_back(n, m, neon_time, normal_time);
     }
-    sort(times[0].begin(), times[0].end());
-    sort(times[1].begin(), times[1].end());
-    elapse_time_list.emplace_back(n, m, times[0][times[0].size() / 2],  times[1][times[1].size() / 2]);
-    // std::cout << "neon median : " << times[0][times[0].size() / 2] << " micro sec.  ";
-    // std::cout << "normal median : " << times[1][times[1].size() / 2] << " micro sec." << std::endl;
 }
 
 void print_csv() {
