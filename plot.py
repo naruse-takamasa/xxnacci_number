@@ -54,7 +54,7 @@ def plot_figure(start_matrix_size, plot_naive_time):
 
     fig = plt.grid(True)
     fig = plt.xlabel("matrix size")
-    fig = plt.ylabel("elapse time[micro sec]")
+    fig = plt.ylabel("elapsed time[micro sec]")
     fig = plt.savefig(fig_name)
     fig = plt.show()
 
